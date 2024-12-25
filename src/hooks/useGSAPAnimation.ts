@@ -11,20 +11,23 @@ interface AnimationConfig {
 }
 
 interface AnimationProps {
-  target: string;
+  selector: string;
   config?: AnimationConfig;
   scrollTrigger?: boolean;
 }
 
 export const useGSAPAnimation = ({
-  target,
+  selector,
   config = { duration: 1, ease: 'power2.out' },
   scrollTrigger = false,
 }: AnimationProps) => {
   const element = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    if (!element.current) return;
+    const targetElement = document.querySelector(selector) as HTMLElement;
+    if (!targetElement) return;
+
+    element.current = targetElement;
 
     const animation = {
       opacity: 0,
@@ -50,7 +53,7 @@ export const useGSAPAnimation = ({
     return () => {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
-  }, [config, scrollTrigger]);
+  }, [config, scrollTrigger, selector]);
 
   return element;
 };
